@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="theme-color" content="#f1f8e9">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+
+      <!-- Memuat Tailwind CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="brand-header no-print py-2">
+  <div class="container d-flex justify-content-between align-items-center">
+    
+    <div class="d-flex align-items-center gap-2">
+      <img src="https://lh3.googleusercontent.com/u/0/d/1mRLgMm0yQTd7tvGZMlljONAD75EiwATc" class="brand-logo" alt="Logo" style="max-height: 45px; width: auto;">
+      
+      <div class="d-flex flex-column align-items-start lh-1">
+        <span class="brand-text fw-bold text-dark fs-5">Bersemi</span>
+        <span class="text-muted" style="font-size: 0.65rem; letter-spacing: 0.5px; opacity: 0.7; margin-top: 2px;">
+          SDS v.30.1
+        </span>
+      </div>
+    </div>
+
+    <div id="area-auth" class="m-0">
+      <button id="btnLoginAdmin" class="btn btn-sm btn-outline-primary fw-bold px-3" style="border-radius: 12px;" onclick="loginAdmin()">
+        <i class="bi bi-lock-fill me-1"></i> Masuk Admin
+      </button>
+      <button id="btnLogoutAdmin" class="btn btn-sm btn-danger fw-bold px-3 d-none" style="border-radius: 12px;" onclick="logoutAdmin()">
+        <i class="bi bi-box-arrow-left me-1"></i> Keluar
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Menu navigasi Utama -->
+<div class="nav-scroller no-print">
+  <div class="container">
+    <ul class="nav nav-tabs border-0 justify-content-between" id="mainTab" role="tablist" >
+      
+      <li class="nav-item">
+        <button class="nav-link active d-flex flex-column align-items-center py-2" data-bs-toggle="tab" data-bs-target="#tab-dash" onclick="loadDashboard()">
+          <i class="bi bi-house-door fs-5"></i>
+          <span style="font-size: 10px; font-weight: 500; margin-top: 2px;">Home</span>
+        </button>
+      </li>
+      
+      <li class="nav-item">
+        <button class="nav-link d-flex flex-column align-items-center py-2" data-bs-toggle="tab" data-bs-target="#tab-warga" onclick="loadWarga()">
+          <i class="bi bi-people fs-5"></i>
+          <span style="font-size: 10px; font-weight: 500; margin-top: 2px;">Warga</span>
+        </button>
+      </li>
+      
+      <li class="nav-item">
+        <button class="nav-link d-flex flex-column align-items-center py-2" data-bs-toggle="tab" data-bs-target="#tab-lap-warga" onclick="loadLapWarga()">
+          <i class="bi bi-cash-stack fs-5"></i>
+          <span style="font-size: 10px; font-weight: 500; margin-top: 2px;">Iuran</span>
+        </button>
+      </li>
+      
+      <li class="nav-item" id="menu-keu">
+        <button class="nav-link d-flex flex-column align-items-center py-2" data-bs-toggle="tab" data-bs-target="#tab-lap-keu">
+          <i class="bi bi-bar-chart-line fs-5"></i>
+          <span style="font-size: 10px; font-weight: 500; margin-top: 2px;">Keuangan</span>
+        </button>
+      </li>
+      
+      <li class="nav-item" id="menu-ipl">
+        <button class="nav-link d-flex flex-column align-items-center py-2 text-success" data-bs-toggle="tab" data-bs-target="#tab-ipl" onclick="hitungLaporanIPL()">
+          <i class="bi bi-building-check fs-5"></i>
+          <span style="font-size: 10px; font-weight: bold; margin-top: 2px;">IPL</span>
+        </button>
+      </li>
+      
+      <li class="nav-item" role="presentation">
+        <button class="nav-link d-flex flex-column align-items-center py-2" id="tab-kegiatan-btn" data-bs-toggle="tab" data-bs-target="#tab-kegiatan" type="button" role="tab">
+          <i class="bi bi-calendar-event fs-5"></i>
+          <span style="font-size: 10px; font-weight: 500; margin-top: 2px;">Kegiatan</span>
+        </button>
+      </li>
+     
+    </ul>
+  </div>
+</div>
+
+
+
+<div class="container mt-4">
+  <div class="tab-content w-100" id="myTabContent">
+
+    <div class="tab-pane fade show active" id="tab-dash">
+
+
+        <!-- ================= START: SLIDE WARGA ================= -->
+<div id="carouselWarga" class="carousel slide overflow-hidden mb-6" data-bs-ride="carousel">
+  <div id="dash-loader" class="text-center p-5">        
+      <div class="spinner-border text-primary"></div>
+  </div>
+  <div id="dash-content" class="row g-0 d-none">
+  </div>
+
+     
+       
+<div class="mb-4 pt-4 pb-4 ps-2 pe-2 bg-white shadow-sm border-0" style="border-radius: 15px;">
+  <h5 class="fw-bold text-dark mb-3">
+    <i class="bi bi-calendar-event-fill me-2"></i>Kegiatan yang Akan Datang
+  </h5>
+          <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle border rounded bg-white shadow-sm">
+              <thead class="table-light text-secondary small">
+                <tr>
+                  <th style="width:40px"></th>
+                  <th>Tanggal</th>
+                  <th>Jenis Kegiatan</th>
+                  <th>Jumlah Partisipan</th>
+                </tr>
+              </thead>
+              <tbody id="container-kegiatan-mendatang">
+                </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="col-12 mb-4 pt-4 pb-4 ps-2 pe-2 bg-white shadow-sm border-0" style="border-radius: 15px;">
+          <h5 class="fw-bold text-success mb-3">
+            <i class="bi bi-calendar-check-fill me-2"></i>Kegiatan Selesai (Bulan Ini)
+          </h5>
+          <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle border rounded bg-white shadow-sm">
+              <thead class="table-light text-secondary small">
+                <tr>
+                  <th style="width:40px"></th>
+                  <th>Tanggal</th>
+                  <th>Jenis Kegiatan</th>
+                  <th>Jumlah Partisipan</th>
+                </tr>
+              </thead>
+              <tbody id="container-kegiatan-selesai">
+                </tbody>
+            </table>
+          </div>
+        </div>
+
+    </div>
+
+
+    <div id="keuangan" class="tab-pane fade">
+  
+  <h3 class="mb-3">Laporan Keuangan</h3>  
+  </div>
+
+  </div>
+
+
+    <div class="tab-pane fade" id="tab-warga">
+      <div class="card p-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+  <!-- Sisi Kiri: Judul (diberi 'flex-shrink-0' agar tidak terpotong) -->
+  <h5 class="m-0 fw-bold text-dark flex-shrink-0">
+    <i class="bi bi-people me-2"></i>Data Warga
+  </h5>
+
+  <!-- Sisi Kanan: Wadah Tombol (d-flex agar berjejer, gap-2 untuk jarak antar tombol) -->
+  <div class="d-flex gap-2">
+    <!-- Tombol Pengurus -->
+    <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalPengurusLorong">
+      <i class="bi bi-person-badge"></i> Pengurus
+    </button>
+    
+    <!-- Tombol Warga Baru -->
+    <button class="btn btn-sm btn-warning fw-semibold" id="btnWargaBaru" onclick="openModalWarga()">
+      <i class="bi bi-plus-circle"></i> Tambah
+    </button>
+  </div>
+</div>
+        <div class="row g-3 align-items-center mb-4">
+          <div class="col-md-8">
+            <div class="d-flex gap-2">
+              <div class="card flex-fill border-0 shadow-sm p-2 text-center" style="background-color: #f1f3f5;border-bottom: 3px solid #8e8e8e !important;">
+                <small class="text-muted fw-bold" style="font-size: 11px;">TOTAL WARGA</small>
+                <h4 class="m-0 fw-bold text-dark" id="jmlSemua">0</h4>
+              </div>
+              <div class="card flex-fill border-0 shadow-sm p-2 text-center" style="border-bottom: 3px solid #198754 !important; background-color: #e8f5e9;">
+                <small class="text-success fw-bold" style="font-size: 11px;">MENETAP</small>
+                <h4 class="m-0 fw-bold text-success" id="jmlMenetap">0</h4>
+              </div>
+              <div class="card flex-fill border-0 shadow-sm p-2 text-center" style="border-bottom: 3px solid #dc3545 !important; background-color: #fdf2f2;">
+                <small class="text-danger fw-bold" style="font-size: 11px;">BELUM MENETAP</small>
+                <h4 class="m-0 fw-bold text-danger" id="jmlBelumMenetap">0</h4>
+              </div>
+            </div>
+          </div>
+       
+          <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-2">
+              <label for="filterStatus" class="fw-bold mb-1" style="font-size: 11px; color: #6c757d;">FILTER STATUS WARGA</label>
+              <select id="filterStatus" onchange="filterDanHitungWarga()" class="form-select form-select-sm border-0 bg-light fw-semibold">
+                <option value="Semua">Semua Status</option>
+                <option value="Menetap">Menetap</option>
+                <option value="Belum Menetap">Belum Menetap</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover table-sm" id="tabelWarga">
+            <thead class="table-dark">
+              <tr  style="height: 40px;vertical-align: middle;">
+                <th style="width: 6%; text-align: center" class="text-center">No.</th>
+                <th>Nama</th>
+                <th>Alamat</th>
+                <th>No. Telp</th>
+                <th>Status</th>
+                <th class="text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-warga-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="tab-pane fade" id="tab-lap-warga">
+      <div class="card p-3">
+        
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="m-0 fw-bold text-dark"><i class="bi bi-wallet2 me-2"></i>Iuran</h5>
+          <button id="btn-share-wa" class="btn btn-sm btn-outline-success shadow-sm d-none" onclick="bukaModalShareWA()">
+  <i class="bi bi-whatsapp me-1"></i> Share WA
+</button>
+                  </div>
+
+        <div id="lap-warga-summary" class="row g-2 mb-3 d-none">
+          <div class="col-4 col-md-3">
+            <div class="card p-2 border-start border-success border-4 shadow-sm">
+              <small class="fw-bold text-muted d-block text-center">SUDAH BAYAR</small>
+              <h4 class="m-0 text-success fw-bold text-center" id="count-lunas">0</h4>
+              <div class="text-center text-success mt-1 small fw-bold" id="money-lunas">Rp 0</div>
+            </div>
+          </div>
+          <div class="col-4 col-md-3">
+            <div class="card p-2 border-start border-danger border-4 shadow-sm">
+              <small class="fw-bold text-muted d-block text-center">BELUM BAYAR</small>
+              <h4 class="m-0 text-danger fw-bold text-center" id="count-belum">0</h4>
+              <div class="text-center text-danger mt-1 small fw-bold" id="money-belum">Rp 0</div>
+            </div>
+          </div>
+          <div class="col-4 col-md-3 text-center">
+            <div class="card p-2 border-start border-success border-4 shadow-sm">
+              <small class="text-muted fw-bold" style="font-size: 10px; display: block; text-transform: uppercase; letter-spacing: 0.5px;">TOTAL</small>
+              <h4 class="fw-bold text-primary my-1" id="count-keikutsertaan">0</h4>
+              <small class="text-muted" style="font-size: 10px;">Warga</small>
+            </div>
+          </div>
+          <div class="col-6 col-md-3" style="width: 100%;">
+<div class="d-flex gap-2 mb-3 no-print">
+  
+  <button type="button" id="btn-input-iuran-baru" class="btn btn-success fw-bold w-100 d-none" style="border-radius: 8px; padding: 10px; font-size: 13px;" onclick="bukaModalTambahIuran()">
+    <i class="bi bi-plus-circle me-1"></i> Iuran Baru
+  </button>
+
+  <button type="button" class="btn btn-danger fw-bold w-100" style="border-radius: 8px; padding: 10px; font-size: 13px;" onclick="lacakSemuaTunggakan()">
+    <i class="bi bi-exclamation-triangle me-1"></i> Lacak Tunggakan
+  </button>
+
+</div>
+          </div>
+        </div>
+
+        <div class="row g-2 mb-3 no-print"style='border:1px solid #f2f2f2; background-color:#f2f2f2;border-radius:10px;padding: 10px 5px;'>
+          <div class="col-md-3" style="width:33%"><label class="small fw-bold" >Bulan</label><input type="month" id="fBulan" class="form-control"></div>
+          <div class="col-md-3" style="width:33%"><label class="small fw-bold">Jenis</label><select id="fJenis" class="form-select"></select></div>
+          <div class="col-md-3" style="width:33%"><label class="small fw-bold">Pembayaran</label><select id="fStatusBayar" class="form-select"><option value="SEMUA">Semua</option><option value="LUNAS">Lunas</option><option value="BELUM">Belum</option></select></div>
+          <div class="col-md-3 d-flex align-items-end">
+            <button class="btn btn-dark w-100 fw-bold" onclick="prosesLapWarga()">CARI</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <h3 id="judul-filter-iuran" class="fw-bold text-dark mt-2 mb-3" style="display: none; font-size: 1.25rem;"></h3>
+          <table class="table table-hover table-sm align-middle">
+            <thead class="table-success text-start">
+              <tr style="height:30px;vertical-align: middle;">
+                <th class="text-center" style="width: 5%">No</th>
+                <th style="text-align:left;">Nama Warga</th>
+                <th style="width: 15%" class="text-center">Bayar</th>
+                <th style="width: 30%" class="text-center">Jumlah</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-lap-warga-body">
+              <tr><td colspan="5" class="text-center text-muted">Pilih filter dan klik Cari atau Lacak</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
+ <div class="tab-pane fade" id="tab-lap-keu">
+   <div class="card p-4 shadow-sm border-0 mb-4">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h5 class="fw-bold mb-0 text-dark">
+        <i class="bi bi-file-earmark-bar-graph me-2"></i>Laporan Keuangan
+      </h5>
+      <button id="btn-cetak-laporan" class="btn btn-sm btn-outline-primary shadow-sm d-none" onclick="cetakLaporanKeuangan()">
+        <i class="bi bi-printer-fill me-1"></i> Print / PDF
+      </button>
+    </div>
+
+    <div class="mb-4">
+      <button type="button" class="btn btn-warning fw-bold shadow-sm px-3" data-bs-toggle="modal" data-bs-target="#modalInputKeuangan" id="btnBukaInput">
+        <i class="bi bi-plus-circle-fill me-1"></i> Input Pemasukan / Pengeluaran
+      </button>
+    </div>
+
+    <div class="row g-2 mb-4 no-print align-items-end">
+      <div class="col-8 col-md-4">
+        <label class="small fw-bold text-muted text-uppercase">Pilih Periode Bulan</label>
+        <input type="month" id="fKeuBulan" class="form-control border-secondary-subtle">
+      </div>
+      <div class="col-4 col-md-2">
+        <button class="btn btn-secondary w-100 fw-bold shadow-sm" onclick="prosesLapKeu()">PROSES</button>
+      </div>
+    </div>
+
+    <div id="dash-lap-summary" class="row g-3 mb-4 d-none"></div>
+    
+    <div id="detail-lap-area" class="d-none">
+      <ul class="nav nav-pills mb-3 gap-2">
+        <li class="nav-item"><button class="nav-link active shadow-sm" data-bs-toggle="pill" data-bs-target="#sub-det-masuk">Rincian Masuk</button></li>
+        <li class="nav-item"><button class="nav-link shadow-sm" data-bs-toggle="pill" data-bs-target="#sub-det-keluar">Rincian Keluar</button></li>
+      </ul>
+      
+      <div>
+        <div class="tab-pane fade show active" id="sub-det-masuk">
+          <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle"><thead class="table-success"><tr><th class="text-center">Tanggal</th><th>Nama</th><th>Metode</th><th>Jumlah</th></tr></thead><tbody id="tbl-det-masuk"></tbody></table>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="sub-det-keluar">
+          <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle"><thead class="table-danger"><tr><th>Tanggal</th><th>Kategori</th><th>Keterangan</th><th>Metode</th><th>Nilai</th></tr></thead><tbody id="tbl-det-keluar"></tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+   </div>
+  </div>
+
+
+    <div class="tab-pane fade" id="tab-ipl" role="tabpanel">
+      <div class="card shadow-sm border-0 mt-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="d-print-none">
+              <i class="bi bi-file-earmark-text"></i> Rekap IPL
+            </h5>
+            <button class="btn btn-sm btn-dark fw-bold no-print" onclick="cetakLaporanIPL()">
+              <i class="bi bi-printer-fill"></i> Cetak / Save PDF
+            </button>
+          </div>
+          
+          <div class="no-print">
+            <div class="row g-2 mb-3">
+              <div class="col-md-4">
+                <label class="form-label small fw-bold">Pilih Bulan Transaksi/Bayar:</label>
+                <input type="month" id="fBulanIPL" class="form-control form-control-sm" onchange="hitungLaporanIPL()">
+              </div>
+            </div>
+
+            <div class="alert alert-success py-2 mb-3">
+              <div class="row align-items-center text-center text-md-start">
+                <div class="col-md-6 border-end-md">
+                  <span class="small text-muted d-block">Total Seharusnya Terkumpul (Termasuk Dobel):</span>
+                  <h4 class="mb-0 fw-bold text-dark" id="total-seharusnya-ipl">Rp 0</h4>
+                </div>
+                <div class="col-md-6 text-md-end mt-2 mt-md-0">
+                  <span class="small text-muted d-block">Total Uang IPL Terkumpul Saat Ini:</span>
+                  <h4 class="mb-0 fw-bold text-success" id="total-terkumpul-ipl">Rp 0</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="print-area-ipl">
+  <div class="d-none d-print-block mb-4">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="text-start">
+        <h3 class="fw-bold text-uppercase m-0">Laporan IPL Lorong 9 - Blok A (PK9)</h3>
+        <h5 id="print-periode-ipl" class="fw-bold text-muted m-0">Periode: Mei 2026</h5>
+      </div>
+      
+      <div>
+        <img src="https://lh3.googleusercontent.com/u/0/d/1mRLgMm0yQTd7tvGZMlljONAD75EiwATc" 
+             style="width: auto; height: 60px; object-fit: cover;" 
+             alt="Logo Lorong">
+      </div>
+    </div>
+
+    <div class="text-center fs-6">
+      <div class="mb-1">
+        <span>Total Terkumpul: </span>
+        <span id="print-terkumpul-ipl">Rp 1.350.000</span> / 
+        <span id="print-seharusnya-ipl" class="fw-bold">Rp 1.350.000</span>
+      </div>
+      <div class="text-muted small">
+        <span class="text-success fw-bold">Sudah Lunas: <span id="print-warga-lunas">31</span> Warga</span>
+        <span class="mx-2">|</span>
+        <span class="text-danger fw-bold">Belum Lunas: <span id="print-warga-belum">2</span> Warga</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-sm table-striped align-middle" style="font-size: 13px;">
+      <thead class="table-dark text-center">
+        <tr>
+          <th style="width: 5%">No</th>
+          <th>Nama Warga</th>
+          <th>Alamat</th>
+          <th style="width: 15%">Status Bayar</th>
+          <th style="width: 15%">Menetap/Belum</th>
+          <th style="width: 20%">Nominal</th>
+        </tr>
+      </thead>
+      <tbody id="tbl-ipl-body">
+        <tr><td colspan="6" class="text-center p-3">Silakan pilih bulan transaksi terlebih dahulu.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+        </div>
+      </div>
+    </div>
+
+   <div class="tab-pane fade" id="tab-kegiatan" role="tabpanel">
+      <div class="card shadow-sm border-0 mt-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="card-title text-dark fw-bold m-0">
+              <i class="bi bi-calendar-check"></i> Kegiatan Warga
+            </h5>
+            <button class="btn btn-sm btn-warning fw-bold" id="btn-tambah-kegiatan" data-bs-toggle="modal" data-bs-target="#modalKegiatan">
+              <i class="bi bi-plus-circle"></i> Tambah Kegiatan
+            </button>
+          </div>
+          <div id="list-kegiatan-warga" class="g-0 mt-4">
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="tab-pane fade" id="tab-setting">
+      <div class="card p-3">
+        <div class="d-flex justify-content-between mb-3 align-items-center">
+          <h5 class="fw-bold m-0 text-warning"><i class="bi bi-gear-fill me-2"></i>Master Tarif Iuran</h5>
+          <div>
+            <button class="btn btn-sm btn-outline-warning fw-bold" onclick="toggleFormSetting()">+ Tambah Baru</button>
+            <button type="button" class="btn btn-sm btn-primary fw-bold ms-2" onclick="bukaModalTambahIuran()">
+              <i class="bi bi-plus-circle"></i> Daftarkan Jenis Iuran
+            </button>
+          </div>
+        </div>
+        <div id="formSettingArea" class="bg-light p-3 rounded mb-4 d-none border" style="padding:0!important">
+          <form id="formSetting">
+            <div class="row g-2">
+              <div class="col-md-4"><label class="small fw-bold">Jenis Iuran</label><input type="text" name="jenis" class="form-control" placeholder="Contoh: IPL" required></div>
+              <div class="col-md-4"><label class="small fw-bold">Status Warga</label><select name="status" class="form-select"><option>Menetap</option><option>Belum Menetap</option></select></div>
+              <div class="col-md-4"><label class="small fw-bold">Nilai Rp</label><input type="number" name="nilai" class="form-control" required></div>
+              <div class="col-12 mt-2"><button type="submit" class="btn btn-warning w-100 fw-bold" id="btnSaveSet">SIMPAN SETTING</button></div>
+            </div>
+          </form>
+        </div>
+        <table class="table table-sm"><thead class="table-dark"><tr><th>Jenis</th><th>Status</th><th>Nominal</th></tr></thead><tbody id="tbl-setting-body"></tbody></table>
+      </div>
+    </div>
+
+  </div> 
+</div> 
+
+<div class="modal fade" id="modalInputKeuangan" tabindex="-1" aria-labelledby="modalInputKeuanganLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 15px; overflow: hidden;">
+      
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fw-bold text-dark" id="modalInputKeuanganLabel">
+          <i class="bi bi-calculator me-2"></i> Input Transaksi Keuangan
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body p-3">
+        
+        <ul class="nav nav-pills mb-4 justify-content-center gap-2" id="pills-tab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold px-4" data-bs-toggle="pill" data-bs-target="#sub-masuk" type="button">
+              <i class="bi bi-box-arrow-in-down me-1"></i> Pemasukan
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold px-4 text-danger" data-bs-toggle="pill" data-bs-target="#sub-keluar" type="button">
+              <i class="bi bi-box-arrow-up me-1"></i> Pengeluaran
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content border-top pt-3">
+          
+          <div class="tab-pane fade show active" id="sub-masuk">
+            <form id="formMasuk" class="p-2">
+              <h5 class="text-primary mb-3 fw-bold">Input Pemasukan</h5>
+              <div class="row g-2">
+                <div class="col-md-6 mb-2"><label class="small fw-bold">Tanggal</label><input type="date" name="tanggal" class="form-control" required></div>
+                <div class="col-md-6 mb-2"><label class="small fw-bold">Warga</label><select name="nama" id="selWarga" class="form-select" onchange="autoFillTarif()" required><option value="">Pilih...</option></select></div>
+                <div class="col-md-4 mb-2"><label class="small fw-bold">Jenis Iuran</label><select name="jenis" id="selJenis" class="form-select" onchange="autoFillTarif()"></select></div>
+                <div class="col-md-4 mb-2"><label class="small fw-bold">Bulan Iuran</label><input type="month" name="bulan" class="form-control" required></div>
+                <div class="col-md-4 mb-2"><label class="small fw-bold">Jumlah (Rp)</label><input type="number" name="jumlah" id="inJumlah" class="form-control" required></div>
+                <div class="col-md-6 mb-2">
+                  <label class="small fw-bold">Metode Pembayaran</label>
+                  <select name="metode" class="form-select" required><option>Cash</option><option>Transfer</option><option>QRIS</option></select>
+                </div>
+                <div class="col-md-6 mb-3"><label class="small fw-bold">Keterangan</label><input type="text" name="keterangan" class="form-control"></div>
+              </div>
+              <button type="submit" class="btn btn-success px-4 fw-bold w-100" id="btnMasuk">SIMPAN PEMASUKAN</button>
+            </form>
+          </div>
+
+          <div class="tab-pane fade" id="sub-keluar">
+            <form id="formKeluar" class="p-2">
+              <h5 class="text-danger mb-3 fw-bold">Input Pengeluaran</h5>
+              <div class="row g-2">
+                <div class="col-md-6 mb-2"><label class="small fw-bold">Tanggal</label><input type="date" name="tanggal" class="form-control" required></div>
+                <div class="col-md-6"><label class="form-label small fw-bold">Kategori Pengeluaran</label><select id="outKategori" name="jenis" class="form-select" required><option value="">Memuat kategori...</option></select></div>
+                <div class="col-md-6 mb-2"><label class="small fw-bold">Bulan Pembukuan</label><input type="month" name="bulan" class="form-control" required></div>
+                <div class="col-md-6 mb-2"><label class="small fw-bold">Nilai (Rp)</label><input type="number" name="nilai" class="form-control" required></div>
+                <div class="col-md-6 mb-2">
+                  <label class="small fw-bold">Metode Pembayaran</label>
+                  <select name="metode" class="form-select" required><option>Cash</option><option>Transfer</option><option>QRIS</option></select>
+                </div>
+                <div class="col-12 mb-3"><label class="small fw-bold">Keterangan / Keperluan</label><input type="text" name="keterangan" class="form-control" required></div>
+              </div>
+              <button type="submit" class="btn btn-danger px-4 fw-bold w-100" id="btnKeluar">SIMPAN PENGELUARAN</button>
+            </form>
+          </div>
+
+        </div> </div> </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalTambahIuran" tabindex="-1" aria-labelledby="modalTambahIuranLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="border-radius: 12px; overflow: hidden;">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title" id="modalTambahIuranLabel"><i class="bi bi-wallet2 me-2"></i> Sistem Manajemen Peserta & Jenis Iuran</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        
+        <ul class="nav nav-tabs nav-justified pt-2 mx-3 mb-4" id="iuranModalTabs" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active fw-bold w-100" id="tab-baru-ctrl" data-bs-toggle="tab" data-bs-target="#pane-iuran-baru" type="button" role="tab" aria-selected="true" style="color: #212529;">
+      <i class="bi bi-plus-circle-fill text-success me-1"></i> Form Iuran Baru
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link fw-bold w-100" id="tab-edit-ctrl" data-bs-toggle="tab" data-bs-target="#pane-iuran-edit" type="button" role="tab" aria-selected="false" onclick="initTabEditIuran()" style="color: #212529;">
+      <i class="bi bi-pencil-square text-danger me-1"></i> Form Edit Iuran
+    </button>
+  </li>
+</ul>
+<style>
+  #iuranModalTabs .nav-link:not(.active) {
+    color: #212529 !important; /* Memaksa warna gelap saat TIDAK aktif */
+  }
+</style>
+
+        <div class="tab-content p-3" id="iuranModalTabsContent">
+          
+          <div class="tab-pane fade show active" id="pane-iuran-baru" role="tabpanel">
+            <form id="formTambahIuran">
+              
+              <div class="card bg-light border-0 p-3 mb-3" style="border-radius: 8px;">
+                <label class="form-label fw-bold text-muted small mb-2 text-uppercase">Pilih Model Penginputan:</label>
+                <div class="d-flex gap-4">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="subAksiBaru" id="radInputIuranBaru" value="baru" checked onchange="toggleSubAksiIuran()">
+                    <label class="form-check-label fw-bold" for="radInputIuranBaru">
+                      Input Jenis Iuran Baru
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="subAksiBaru" id="radTambahWargaIuran" value="tambah_warga" onchange="toggleSubAksiIuran()">
+                    <label class="form-check-label fw-bold" for="radTambahWargaIuran">
+                      Tambah Peserta Iuran
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div id="wrapper-skema-baru" class="row g-3 mb-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-bold">Nama / Jenis Iuran Baru</label>
+                  <input type="text" id="mJenisIuran" class="form-control" placeholder="Contoh: Iuran Fogging, Tarikan Tenda">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-bold">Nominal Tarikan (Rp)</label>
+                  <input type="number" id="mNominal" class="form-control" placeholder="Contoh: 50000">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-bold">Mulai Bulan Penagihan</label>
+                  <input type="month" id="mMulaiBulan" class="form-control">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-bold">Sifat Iuran</label>
+                  <select id="mSifat" class="form-control">
+                    <option value="Bulanan">Bulanan (Rutin tiap bulan)</option>
+                    <option value="Sekali">Sekali Tarik (Satu Kali Saja)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="wrapper-iuran-eksisting" class="mb-3 d-none">
+                <label class="form-label fw-bold text-primary">Pilih Master Jenis Iuran Aktif</label>
+                <select id="mSelectIuranEksisting" class="form-select" onchange="updateChecklistWargaEksisting()">
+                  <option value="">-- Pilih Iuran --</option>
+                </select>
+              </div>
+              
+              <label class="form-label d-block fw-bold mt-4 mb-1 text-dark"><i class="bi bi-people me-1"></i> Centang Calon Peserta:</label>
+              <div class="table-responsive" style="max-height: 230px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 6px;">
+                <table class="table table-sm table-hover table-striped mb-0" style="font-size: 13px;">
+                  <thead class="table-light sticky-top">
+                    <tr>
+                      <th width="12%" class="text-center">
+                        <input type="checkbox" id="checkAllWarga" onclick="toggleAllWarga(this)">
+                      </th>
+                      <th>Nama Lengkap Warga</th>
+                      <th width="30%">Status Saat Ini</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbl-warga-checklist-body">
+                    </tbody>
+                </table>
+              </div>
+
+              <div class="text-end mt-3">
+                <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-success btn-sm px-4 fw-bold" onclick="simpanIuranFormBaru()"><i class="bi bi-save me-1"></i> Simpan Pendaftaran</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="tab-pane fade" id="pane-iuran-edit" role="tabpanel">
+            <div class="mb-3">
+              <label class="form-label fw-bold text-danger">Pilih Jenis Iuran yang Ingin Dikelola Pesertanya:</label>
+              <select id="mSelectEditIuran" class="form-select" onchange="loadPesertaIuranEdit()">
+                <option value="">-- Pilih Iuran --</option>
+              </select>
+            </div>
+
+            <label class="form-label d-block fw-bold mt-4 mb-1 text-dark"><i class="bi bi-person-dash me-1"></i> Daftar Peserta Aktif Saat Ini:</label>
+            <div class="table-responsive" style="max-height: 250px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 6px;">
+              <table class="table table-sm table-hover align-middle mb-0" style="font-size: 13px;">
+                <thead class="table-danger sticky-top">
+                  <tr>
+                    <th width="12%" class="text-center">No</th>
+                    <th>Nama Lengkap Warga</th>
+                    <th width="25%" class="text-center">Tindakan</th>
+                  </tr>
+                </thead>
+                <tbody id="tbl-peserta-edit-body">
+                  <tr><td colspan="3" class="text-center text-muted p-3">Silakan pilih jenis iuran terlebih dahulu untuk memuat data warga.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <div class="text-end mt-3">
+              <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Tutup</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalWarga" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formWarga">
+        <div class="modal-header fw-bold">Form Warga</div>
+        <div class="modal-body">
+          <input type="hidden" name="id" id="wId">
+          <label class="small fw-bold">Nama</label>
+          <input type="text" name="nama" id="wNama" class="form-control mb-2" required>
+          <label class="small fw-bold">Alamat</label>
+          <textarea name="alamat" id="wAlamat" class="form-control mb-2"></textarea>
+          <label class="small fw-bold">No. Telepon</label>
+          <input type="text" name="telp" class="form-control" id="wTelp" placeholder="0812...">          
+          <label class="small fw-bold">Status</label>
+          <select name="status" id="wStatus" class="form-select mb-2">
+            <option>Menetap</option>
+            <option>Belum Menetap</option>
+          </select>
+        </div>
+        <div class="modal-footer"><button type="submit" id="btnWarga" class="btn btn-warning w-100 fw-bold">SIMPAN</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+
+<!-- Tampilan Pop-Up Login/Logiut Admin -->
+<div class="modal fade" id="modalLoginAdmin" tabindex="-1" aria-labelledby="modalLoginAdminLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0">
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title" id="modalLoginAdminLabel">
+          <i class="bi bi-shield-lock-fill me-2"></i>Otentikasi Admin
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-3 position-relative">
+        
+        <div id="formAksesPin">
+          <div class="mb-3">
+            <label for="inputPinAdmin" class="form-label fw-bold text-secondary">Masukkan PIN Rahasia Pengurus Lorong 9</label>
+            <input type="password" class="form-control form-control-lg text-center" id="inputPinAdmin" placeholder="••••••" maxlength="15">
+            <div id="errorPinAdmin" class="text-danger small mt-2 d-none">❌ PIN Salah! Anda tetap berada dalam mode Warga Umum.</div>
+          </div>
+        </div>
+
+        <div id="loadingAksesAdmin" class="text-center py-4 d-none">
+          <div class="spinner-border text-dark mb-3" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <h6 class="fw-bold text-dark animate__animated animate__fadeIn animate__infinite">Memverifikasi & Membuka Menu Pengurus...</h6>
+        </div>
+
+      </div>
+      
+      <div class="modal-footer border-0 bg-light" id="footerMdalAdmin">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-dark px-4" onclick="prosesLoginAdminModern()">Masuk</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Input Laporan Keuangan Masuk/Keluar -->
+<div class="modal fade" id="modalInputKeuangan" tabindex="-1" aria-labelledby="modalInputKeuanganLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 15px; overflow: hidden;">
+      
+      <div class="modal-header bg-light">
+        <h5 class="modal-title fw-bold text-dark" id="modalInputKeuanganLabel">
+          <i class="bi bi-calculator me-2"></i> Input Transaksi Keuangan
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body p-3">
+        
+        <ul class="nav nav-pills mb-4 justify-content-center gap-2" id="pills-tab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold px-4" data-bs-toggle="pill" data-bs-target="#sub-masuk" type="button">
+              <i class="bi bi-box-arrow-in-down me-1"></i> Pemasukan
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold px-4 text-danger" data-bs-toggle="pill" data-bs-target="#sub-keluar" type="button">
+              <i class="bi bi-box-arrow-up me-1"></i> Pengeluaran
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content border-top pt-3">
+          
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Input Kegiatan-->
+<div class="modal fade" id="modalKegiatan" tabindex="-1" aria-labelledby="modalKegiatanLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0" style="border-radius: 15px; overflow: hidden;">
+      <form id="form-kegiatan">
+        
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title fw-bold" id="modalKegiatanLabel">
+            <i class="bi bi-calendar-plus me-2"></i>Tambah Kegiatan Baru
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body p-3">
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-secondary">Tanggal Kegiatan</label>
+            <input type="date" id="keg_tanggal" class="form-control" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-secondary">Nama / Jenis Kegiatan</label>
+            <input type="text" id="keg_nama" class="form-control" placeholder="Contoh: Kerja Bakti Lorong 9" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-secondary">Jumlah Partisipan (Orang)</label>
+            <input type="number" id="keg_partisipasi" class="form-control" placeholder="Contoh: 25" required>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-secondary">Upload Foto Kegiatan</label>
+            <input type="file" id="keg_foto" class="form-control" accept="image/*">
+            <small class="text-muted" style="font-size: 11px;">
+              *Opsional. Kosongkan saat edit jika tidak ingin mengganti foto lama.
+            </small>
+          </div>
+        </div>
+        
+        <div class="modal-footer bg-light border-0">
+          <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary fw-bold px-4">Simpan Kegiatan</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- hasil pop-up pengurus-->
+<!-- ================= POP-UP MODAL: PENGURUS LORONG 9 ================= -->
+  <div class="modal fade" id="modalPengurusLorong" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+      <div class="modal-content border-0 shadow" style="border-radius: 15px; overflow: hidden;">
+        
+        <!-- Header Modal -->
+        <div class="modal-header border-0 bg-success text-white p-3">
+          <h5 class="modal-title fw-bold h6"><i class="bi bi-people-fill me-2"></i>Struktur Organisasi</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <!-- Isi Modal -->
+        <div class="modal-body p-4 text-start">
+          <h4 class="fw-bold text-dark mb-1">Pengurus Lorong 9</h4>
+          <p class="text-muted small mb-4">Daftar penanggung jawab tata laksana lingkungan dan keuangan warga.</p>
+          
+          <!-- Kartu Profil 1: Ketua Lorong -->
+          <div class="p-3 bg-light rounded d-flex align-items-center gap-3 mb-3" style="border-left: 4px solid #198754;">
+            <div class="bg-white rounded-circle shadow-sm d-flex align-items-center justify-content-center border" style="width: 50px; height: 50px; flex-shrink: 0; font-size: 1.4rem;">
+              👨‍💼
+            </div>
+            <div>
+              <span class="badge bg-success-subtle text-success border border-success-subtle mb-1 text-uppercase fw-bold" style="font-size: 0.65rem;">Ketua Lorong</span>
+              <h6 class="fw-bold text-dark mb-0" style="font-size: 1rem;">Gritna</h6>
+              <small class="text-muted" style="font-size: 0.75rem;">Koordinator utama program & aspirasi warga Lorong 9.</small>
+            </div>
+          </div>
+
+          <!-- Kartu Profil 2: Bendahara -->
+          <div class="p-3 bg-light rounded d-flex align-items-center gap-3 mb-0" style="border-left: 4px solid #0dcaf0;">
+            <div class="bg-white rounded-circle shadow-sm d-flex align-items-center justify-content-center border" style="width: 50px; height: 50px; flex-shrink: 0; font-size: 1.4rem;">
+              👨‍💻
+            </div>
+            <div>
+              <span class="badge bg-info-subtle text-info border border-info-subtle mb-1 text-uppercase fw-bold" style="font-size: 0.65rem;">Bendahara</span>
+              <h6 class="fw-bold text-dark mb-0" style="font-size: 1rem;">Slamet Santoso</h6>
+              <small class="text-muted" style="font-size: 0.75rem;">Penanggung jawab pengelolaan kas iuran, bank sampah, & jelantah.</small>
+            </div>
+          </div>
+
+        </div>
+        
+        <!-- Footer Modal -->
+        <div class="modal-footer border-0 p-3 bg-light">
+          <button type="button" class="btn btn-secondary btn-sm rounded-pill px-3" data-bs-dismiss="modal">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Biasanya skrip bootstrap ditaruh di bawah sini -->
+
+<div class="modal fade" id="modalShareWA" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered"> 
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Pilih Iuran untuk Dishare</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="list-pilihan-iuran">
+        </div>
+    </div>
+  </div>
+</div>
+<div class="footer-spacer" style="height: 80px;"></div>
+
+</body>
+</html>

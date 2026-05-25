@@ -1,0 +1,271 @@
+<style>
+/* ==========================================
+   1. GLOBAL & RESET STYLES
+   ========================================== */
+*, *::before, *::after {
+  box-sizing: border-box !important;
+}
+
+html, body {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important; /* Kunci mati sumbu X (Kanan-Kiri) */
+  position: relative !important;
+}
+
+body{background:#f1f8e9}
+img, table {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+#dash-content {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: visible !important; /* Pastikan scroll ke bawah tetap aman */
+}
+
+/* ==========================================
+   2. BRANDING & HEADER LAYER
+   ========================================== */
+.brand-header {
+  background-color:none;
+  padding: 12px 5px 0 5px;
+  margin: 20px 0 -20px 0;
+  color: black;
+  text-align: center;
+  position: relative;
+  max-width: 100%!important;
+}
+.brand-logo { 
+  width: 200px; 
+  height: auto; 
+  margin-bottom: 4px;
+  max-width: 80%; 
+}
+.brand-text { 
+  color: #000; 
+  font-weight: 800; 
+  display: block; 
+  font-size: 1.1rem; 
+  letter-spacing: 1px; 
+}
+
+/* ==========================================
+   3. FIXED BOTTOM NAVIGATION MENU
+   ========================================== */
+.nav-scroller {
+  position: fixed;
+  bottom: 0px;
+  left: 0;
+  width: 100%;
+  max-width: 100%;
+  background: #162a10 !important;    
+  z-index: 1030;
+  padding: 8px 0;
+  border-top: 1px solid #9db09a; 
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+  white-space: nowrap;
+  display: block;
+  flex-shrink: 0;
+  -webkit-overflow-scrolling: touch;
+}
+.nav-scroller .nav .nav-link:last-child {
+  margin-right: 15px !important;
+}
+.nav-bottom-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Tab Configuration inside Scroller */
+.nav-tabs { 
+  display: flex; 
+  flex-wrap: nowrap;
+  background: transparent;
+  width: auto;
+  border-bottom: none;
+}
+.nav-tabs .nav-link {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  color: #f2f2f2 !important; 
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: transparent; 
+  padding: 8px 15px !important;
+  border: none !important;
+  border-radius: 12px !important;
+  transition: all 0.3s ease;
+}
+
+/* Tab Active & Hover State (General Green Leaf Gradient) */
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-link:hover {
+  background: linear-gradient(135deg, #4CAF50, #2E7D32) !important; 
+  color: #ffffff !important;
+}
+.nav-tabs .nav-link.active {
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3) !important; 
+}
+
+/* Special Tab Highlight: Setting Button (Orange Gradient) */
+.nav-tabs .nav-link[data-bs-target="#tab-setting"]:hover {
+  color: #ffc107 !important;
+}
+.nav-tabs .nav-link[data-bs-target="#tab-setting"].active {
+  background: linear-gradient(135deg, #ffb703, #fb8500) !important; 
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(251, 133, 0, 0.3) !important;
+}
+
+/* ==========================================
+   4. COMPONENTS & UTILITIES OPTIMIZATION
+   ========================================== */
+.fade:not(.show) {
+  opacity: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important; 
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+}
+.card { 
+  border: none; 
+  border-radius: 12px; 
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+  margin-bottom: 15px; 
+}
+.table-responsive, 
+.table-responsive-custom { 
+  width: 100%;
+  border: none; 
+  border-radius: 8px; 
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 20px;
+}
+.form-control, .form-select { 
+  padding: 10px; 
+  font-size: 14px; 
+  border-radius: 8px; 
+}
+.table th, .table td {
+  border-left: none !important;
+  border-right: none !important;
+}
+/* 2. Hancurkan visual dan ukuran spanduk Google di WebView */
+.warning-banner-bar,
+div[class*="warning-banner"],
+iframe[id*="warning-banner"],
+.goog-inline-block {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  opacity: 0 !important;
+  position: absolute !important;
+  overflow: hidden !important;
+}
+
+/* ==========================================
+   5. RESPONSIVE BREAKPOINTS (MOBILE VIEW)
+   ========================================== */
+@media (max-width: 768px) {
+  .brand-text { font-size: 1rem; }
+  .nav-tabs .nav-link { padding: 12px 14px !important; }
+}
+
+/* ==========================================
+   6. MASTER PRINT & SAVE PDF ENGINE
+   ========================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 15mm;
+  }
+  
+  html, body {
+    width: auto !important;
+    max-width: none !important;
+    overflow: visible !important;   
+    overflow-x: visible !important; 
+    height: auto !important;
+    -webkit-print-color-adjust: exact !important; 
+    print-color-adjust: exact !important;        
+  }
+
+  /* Sembunyikan elemen UI Aplikasi saat proses cetak */
+  .no-print, .nav-scroller, .brand-header, navbar, button, .btn, .navbar, #sidebar {
+    display: none !important;
+  }
+
+/* Memaksa kontainer Bootstrap agar jarak kiri dan kanan selalu presisi dan seimbang */
+.container, .container-fluid {
+  padding-right: 15px !important;
+  padding-left: 15px !important;
+  margin-right: auto !important;
+  margin-left: auto !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Mengamankan elemen baris agar tidak menabrak atau meluber keluar batas kontainer */
+.row {
+  margin-right: -4px !important;
+  margin-left: -4px !important;
+}
+
+.row > * {
+  padding-right: 4px !important;
+  padding-left: 4px !important;
+}
+
+  /* Ratakan kontainer utama agar memanfaatkan 100% ruang kertas A4 */
+  .container, .container-fluid, .card, .card-body, #print-area-ipl {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Konfigurasi tabel agar tidak terpotong sepihak di batas kertas */
+  .table-responsive, .table-responsive-custom, table {
+    overflow: visible !important;
+    overflow-x: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-collapse: collapse !important;
+    page-break-inside: auto;
+  }
+  tr { 
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  /* Mempertahankan visual warna baris data saat cetak PDF */
+  .table-dark {
+    background-color: #212529 !important;
+    color: #ffffff !important;
+  }
+  .table-danger {
+    background-color: #f8d7da !important;
+  }
+  .badge {
+    color: #fff !important;
+  }
+  .bg-success {
+    background-color: #198754 !important; 
+  }
+  .bg-danger {
+    background-color: #dc3545 !important; 
+  }
+  .bg-info {
+    background-color: #0dcaf0 !important; 
+    color: #000 !important; 
+  }
+}
+</style>
